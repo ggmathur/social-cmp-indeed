@@ -1,5 +1,3 @@
-<script charset="utf-8" src="http://widgets.twimg.com/j/2/widget.js"></script>
-<script>
 new TWTR.Widget({
     version: 2,
     type: 'profile',
@@ -25,4 +23,3 @@ new TWTR.Widget({
         behavior: 'all'
     }
 }).render().setUser('twitter').start();
-</script>
