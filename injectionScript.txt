@@ -1,0 +1,1 @@
+javascript:(function()%7Bvar%20sUrl=prompt('Enter%20URL%20to%20JavaScript%20file');if(sUrl)%7Bvar%20s=document.createElement('script');s.setAttribute('src',sUrl);document.getElementsByTagName('body')%5B0%5D.appendChild(s);alert('Script%20injected!');%7D%7D)();
