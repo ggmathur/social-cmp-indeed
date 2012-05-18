@@ -1,17 +1,35 @@
-tweetCount = prompt("Number of tweets?", 12);
-tweetsPerPage = prompt("Tweets per page?", 3);
-account = prompt("Twitter handle?", "IndeedHackerz");
+parameters = getUrlVars();
+foundUser = parameters['cmp'];
+tweetCount = 10;
+tweetsPerPage = 2;
+
+
+
+function getUrlVars() { // Read a page's GET URL variables and return them as an associative array.
+    var vars = [],
+        hash;
+    var hashes = window.location.href.slice(window.location.href.indexOf('?') + 1).split('&');
+    for (var i = 0; i < hashes.length; i++) {
+        hash = hashes[i].split('=');
+        vars.push(hash[0]);
+        vars[hash[0]] = hash[1];
+    }
+    return vars;
+}
+
+//alert("" + $('company_name').children[0]);
+
 
 JQTWEET = {
     // Set twitter username, number of tweets & id/class to append tweets
-    user: account,
+    user: foundUser,
     numTweets: tweetCount,
     appendTo: '#jstwitter',
  
     // core function of jqtweet
     loadTweets: function() {
         $.ajax({
-            url: 'http://api.twitter.com/1/statuses/user_timeline.json/',
+            url: /*'json-twitter.txt', */'http://api.twitter.com/1/statuses/user_timeline.json/',
             type: 'GET',
             dataType: 'jsonp',
             data: {
