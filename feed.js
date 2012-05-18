@@ -1,100 +1,137 @@
+var completedRequests = 0;
+
+function sortPosts() {
+    // don't run until completedRequests 
+    if (completedRequests != 2) {
+        return;
+    };
+
+    var html = '<div class="post">POST_TEXT<div class="time">AGO</div>';
+
+    // sort posts
+    posts.sort(function(a,b) {
+        return b.creationTime - a.creationTime
+    })
+
+    // iterate through posts and place on page
+    for (var i = 0; i < posts.length; i++) {
+        $(JQ.appendTo).append(
+            html.replace('POST_TEXT', posts[i].text )
+                .replace(/USER/g, posts[i].name )
+                .replace('AGO', posts[i].age )
+                .replace(/ID/g, posts[i].id )
+        );
+     }
+}
+
+function getTwitterPosts() {
+    $.ajax({
+        url: 'http://api.twitter.com/1/statuses/user_timeline.json/',
+        type: 'GET',
+        dataType: 'jsonp',
+        data: {
+            screen_name: JQ.twitterUser,
+            include_rts: true,
+            count: JQ.numPosts,
+            include_entities: true
+        },
+        success: function(data, textStatus, xhr) {
+ 
+         // append tweets
+         for (var i = 0; i < data.length; i++) {
+
+             // skip post if there isn't text
+             if (data[i].text == null) {
+                 continue;
+             };
+
+             var post = {
+                 text: JQ.ify.clean(data[i].text),
+                 name: data[i].user.screen_name,
+                 age: JQ.timeAgo(data[i].created_at),
+                 id: data[i].id_str,
+                 creationTime: new Date(data[i].created_at)
+             };
+             posts.push(post);
+          }
+        }
+    }).done( function() {
+        completedRequests += 1;
+        sortPosts();
+    });
+}
+
+function getFBPosts() {
+    var auth_token = "AAACEdEose0cBAMH94fkKEZCrpEgc0NzqVwq1eDFOCZCmuWPBlmlHqoJx1OOK7z4kCHvtZAIlHm8or7I5v3wV1YcZCVGutlPZC2TX5RN4ARgZDZD";
+
+    // get fb
+    $.ajax({
+        url: 'https://graph.facebook.com/'+JQ.fbUser+'/posts/',
+        type: 'GET',
+        dataType: 'jsonp',
+        data: {
+            limit: JQ.numPosts,
+            access_token: auth_token,
+        },
+        success: function(data, textStatus, xhr) {
+
+            if (data.data != null) {
+                // append fb
+                for (var i = 0; i < data.data.length; i++) {
+
+                    // skip post if there isn't text
+                    if (data.data[i].message == null) {
+                        continue;
+                    };
+
+                    var post = {
+                        text: JQ.ify.clean(data.data[i].message),
+                        name: data.data[i].from.name,
+                        age: JQ.timeAgo(data.data[i].created_time),
+                        id: data.data[i].from.id,
+                        creationTime: new Date(data.data[i].created_time)
+                    };
+                    posts.push(post);
+                 }
+            }
+        }
+    }).done( function() {
+        completedRequests += 1;
+        sortPosts();
+    });
+}
+
 JQ = {
     twitterUser: 'DisneyParks',
     fbUser: 'DisneyParksBlog',
     numPosts: 5,
     appendTo: '#jspost',
 
-
     loadRealFeeds: function() {
 
-        var html = '<div class="post">POST_TEXT<div class="time">AGO</div>';
+        /*
+        $(function () {
+            getTwitterPosts();
+        }).ready( function () {
+            getFBPosts();
+        }).ready( function() {
+            sortPosts();
+        });
+        */
 
-        $.ajax({
-            url: 'http://api.twitter.com/1/statuses/user_timeline.json/',
-            type: 'GET',
-            dataType: 'jsonp',
-            data: {
-                screen_name: JQ.twitterUser,
-                include_rts: true,
-                count: JQ.numPosts,
-                include_entities: true
-            },
-            success: function(data, textStatus, xhr) {
- 
-                 // append tweets
-                 for (var i = 0; i < data.length; i++) {
+        getTwitterPosts();
+        getFBPosts();
 
-                    // skip post if there isn't text
-                    if (data[i].text == null) {
-                        continue;
-                    };
+        /*
+        $(document).ajaxStart(function () {
+            getTwitterPosts;
+            getFBPosts;
+        });
 
-                    var post = {
-                        text: JQ.ify.clean(data[i].text),
-                        name: data[i].user.screen_name,
-                        age: JQ.timeAgo(data[i].created_at),
-                        id: data[i].id_str,
-                        creationTime: new Date(data[i].created_at)
-                    };
-                    posts.push(post);
-                 }
-            }
-        }).done( function () {
-            /*
-             var appId = 'dad57dce828d6225f8c8e4d9f8688a59';
-             var appSecret = '103537079744377';
-             var auth_token = "https://graph.facebook.com/oauth/access_token?client_id="+appId+"&client_secret="+appSecret+"&grant_type=client_credentials";
-             */
-             var auth_token = "AAACEdEose0cBAJ2mHHbPHNDZBgFKgnwfVU5BxrXMgrfQ8SiGvwX7r8rXTfxcCIGEZA5b2VSM6FgvA8ut8ocRjTAgQonqZAqpl4gRaVXhwZDZD";
-
-             // get fb
-            $.ajax({
-                url: 'https://graph.facebook.com/'+JQ.fbUser+'/posts/',
-                type: 'GET',
-                dataType: 'jsonp',
-                data: {
-                    limit: JQ.numPosts,
-                    access_token: auth_token,
-                },
-                 success: function(data, textStatus, xhr) {
-
-                     if (data.data != null) {
-                         // append fb
-                         for (var i = 0; i < data.data.length; i++) {
-
-                            // skip post if there isn't text
-                            if (data.data[i].message == null) {
-                                continue;
-                            };
-
-                            var post = {
-                                text: JQ.ify.clean(data.data[i].message),
-                                name: data.data[i].from.name,
-                                age: JQ.timeAgo(data.data[i].created_time),
-                                id: data.data[i].from.id,
-                                creationTime: new Date(data.data[i].created_time)
-                            };
-                            posts.push(post);
-                         }
-                    }
-                }
-            }).done( function() {
-                 // sort posts
-                 posts.sort(function(a,b) {
-                     return b.creationTime - a.creationTime
-                 })
-
-                 // iterate through posts and place on page
-                 for (var i = 0; i < posts.length; i++) {
-                     $(JQ.appendTo).append(
-                         html.replace('POST_TEXT', posts[i].text )
-                             .replace(/USER/g, posts[i].name )
-                             .replace('AGO', posts[i].age )
-                             .replace(/ID/g, posts[i].id )
-                     );
-                 }
-            })
-        })
+        $(document).ajaxStop(function () {
+            sortPosts();
+        });
+        */
     },
  
 
