@@ -4,4 +4,5 @@ function createDiv() {
     var socialDiv = document.createElement("div");
     socialDiv.id = "socialFeed";
     socialDiv.innerHTML = "Alright, let's do stuff!";
+    return socialDiv;
 }
