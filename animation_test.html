@@ -3,49 +3,28 @@
 <script src="resources/jquery.js"></script>
 <script src="resources/bootstrap/js/bootstrap.js"> </script>
 <link rel="stylesheet" href="resources/bootstrap/css/bootstrap.css" type="text/css">
+<script src="gfeed.js"></script>
+<style type="text/css">
+    #jstwitter {
+        font-size:15px;color:#333333;padding:0px;
+    }
+    #jstwitter .tweet {
+        margin:0 auto 15px auto;padding:0 0 15px 0;border-bottom:1px dotted #ccc;
+    }
+    #jstwitter .tweet a{
+        text-decoration:none;color:#13c9d0;
+    }
+    #jstwitter .tweet a:hover {
+        text-decoration:underline;
+    }
+    #jstwitter .tweet .time {
+        font-size:10px;font-style:italic;color:#666666;
+    }
+</style>
 </head>
 <body>
-   <div id="myCarousel" class="carousel slide">
-        <div class="carousel-inner">
-            <div id="container1" class="active item">
-                <div class="tweet" id="1.1">
-                    here's one
-                </div>
-                <div class="tweet" id="1.2">
-                    here's two
-                </div>
-                <div class="tweet" id="1.3">
-                    here's three
-                </div>
-            </div>
-            <div id="container2" class="item">
-                <div class="tweet" id="2.1">
-                    this was one
-                </div>
-                <div class="tweet" id="2.2">
-                    this was two
-                </div>
-                <div class="tweet" id="2.3">
-                    this was three
-                </div>
-            </div>
-            <div id="container3" class="item">
-                <div class="tweet" id="3.1">
-                    this will be one
-                </div>
-                <div class="tweet" id="3.2">
-                    this will be two
-                </div>
-                <div class="tweet" id="3.3">
-                    this will be three
-                </div>
-            </div>
-        </div>
-    </div>
-    <script>
-        $('.carousel').carousel({
-        interval: 2000
-        })
-    </script>
+<div id="myCarousel" class="carousel slide">
+    <div id="jstwitter" class="carousel-inner"></div>
+</div>
 </body>
 </html>
