@@ -37,7 +37,7 @@ JQ = {
         // spoof data
         //////////////
 
-         var html = '<div class="post">TWEET_TEXT<div class="time">AGO</div>';
+         var html = '<div class="post">POST_TEXT<div class="time">AGO</div>';
 
          // get tweets
          data = tData;
@@ -69,7 +69,7 @@ JQ = {
             posts.push(post);
          }
 
-         // sort array
+         // sort posts
          posts.sort(function(a,b) {
              return b.creationTime - a.creationTime
          })
@@ -77,7 +77,7 @@ JQ = {
          // iterate through posts and place on page
          for (var i = 0; i < posts.length; i++) {
              $(JQ.appendTo).append(
-                 html.replace('TWEET_TEXT', posts[i].text )
+                 html.replace('POST_TEXT', posts[i].text )
                      .replace(/USER/g, posts[i].name )
                      .replace('AGO', posts[i].age )
                      .replace(/ID/g, posts[i].id )
