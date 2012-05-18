@@ -49,7 +49,7 @@ JQ = {
                 name: data[i].user.screen_name,
                 age: JQ.timeAgo(data[i].created_at),
                 id: data[i].id_str,
-                creationTime: data[i].created_at
+                creationTime: new Date(data[i].created_at)
             };
             posts.push(post);
          }
@@ -64,10 +64,15 @@ JQ = {
                 name: data.data[i].from.name,
                 age: JQ.timeAgo(data.data[i].created_time),
                 id: data.data[i].from.name,
-                creationTime: data.data[i].created_time
+                creationTime: new Date(data.data[i].created_time)
             };
             posts.push(post);
          }
+
+         // sort array
+         posts.sort(function(a,b) {
+             return b.creationTime - a.creationTime
+         })
 
          // iterate through posts and place on page
          for (var i = 0; i < posts.length; i++) {
