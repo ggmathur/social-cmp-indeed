@@ -34,7 +34,7 @@ JQTWEET = {
  
         });
         */
-        cleanData();
+        spoofData();
     },
      
          
@@ -148,7 +148,7 @@ $(document).ready(function () {
     JQTWEET.loadTweets();
 });
 
-function cleanData() {
+function spoofData() {
      var html = '<div class="tweet">TWEET_TEXT<div class="time">AGO</div>';
 
      data = [{
