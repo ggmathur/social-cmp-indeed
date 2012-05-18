@@ -3,6 +3,6 @@ parentDiv.appendChild(createDiv());
 function createDiv() {
     var socialDiv = document.createElement("div");
     socialDiv.id = "socialFeed";
-    socialDiv.innerHTML = "Alright, let's do stuff!";
+    socialDiv.innerHTML = "<iframe src='https://raw.github.com/ggmathur/social-cmp-indeed/master/animation_test.html'></iframe>";
     return socialDiv;
 }
