@@ -1,20 +1,18 @@
-JQTWEET = {
-    // Set twitter username, number of tweets & id/class to append tweets
+JQ = {
     user: 'DisneyParks',
     numTweets: 5,
-    appendTo: '#jstwitter',
+    appendTo: '#jspost',
  
-    // core function of jqtweet
-    loadTweets: function() {
+    loadFeeds: function() {
         /*
         $.ajax({
             url: 'http://api.twitter.com/1/statuses/user_timeline.json/',
             type: 'GET',
             dataType: 'jsonp',
             data: {
-                screen_name: JQTWEET.user,
+                screen_name: JQ.user,
                 include_rts: true,
-                count: JQTWEET.numTweets,
+                count: JQ.numTweets,
                 include_entities: true
             },
             success: function(data, textStatus, xhr) {
@@ -23,10 +21,10 @@ JQTWEET = {
          
                  // append tweets into page
                  for (var i = 0; i < data.length; i++) {
-                    $(JQTWEET.appendTo).append(
-                        html.replace('TWEET_TEXT', JQTWEET.ify.clean(data[i].text) )
+                    $(JQ.appendTo).append(
+                        html.replace('TWEET_TEXT', JQ.ify.clean(data[i].text) )
                             .replace(/USER/g, data[i].user.screen_name)
-                            .replace('AGO', JQTWEET.timeAgo(data[i].created_at) )
+                            .replace('AGO', JQ.timeAgo(data[i].created_at) )
                             .replace(/ID/g, data[i].id_str)
                     );
                  }                  
@@ -34,10 +32,54 @@ JQTWEET = {
  
         });
         */
-        spoofData();
+
+        //////////////
+        // spoof data
+        //////////////
+
+         var html = '<div class="post">TWEET_TEXT<div class="time">AGO</div>';
+
+         // get tweets
+         data = tData;
+
+         // append tweets
+         for (var i = 0; i < data.length; i++) {
+            var post = {
+                text: JQ.ify.clean(data[i].text),
+                name: data[i].user.screen_name,
+                age: JQ.timeAgo(data[i].created_at),
+                id: data[i].id_str,
+                creationTime: data[i].created_at
+            };
+            posts.push(post);
+         }
+
+         // get fb
+         data = fbData;
+
+         // append fb
+         for (var i = 0; i < data.data.length; i++) {
+            var post = {
+                text: JQ.ify.clean(data.data[i].message),
+                name: data.data[i].from.name,
+                age: JQ.timeAgo(data.data[i].created_time),
+                id: data.data[i].from.name,
+                creationTime: data.data[i].created_time
+            };
+            posts.push(post);
+         }
+
+         // iterate through posts and place on page
+         for (var i = 0; i < posts.length; i++) {
+             $(JQ.appendTo).append(
+                 html.replace('TWEET_TEXT', posts[i].text )
+                     .replace(/USER/g, posts[i].name )
+                     .replace('AGO', posts[i].age )
+                     .replace(/ID/g, posts[i].id )
+             );
+         }
     },
-     
-         
+
     /**
       * relative time calculator FROM TWITTER
       * @param {string} twitter date string returned from Twitter API
@@ -139,19 +181,23 @@ JQTWEET = {
         return this.hash(this.at(this.list(this.link(tweet))));
       }
     } // ify
- 
-     
-};
+}
+
+var posts = [];
 
 $(document).ready(function () {
     // start jqtweet!
-    JQTWEET.loadTweets();
+    JQ.loadFeeds();
 });
 
-function spoofData() {
-     var html = '<div class="tweet">TWEET_TEXT<div class="time">AGO</div>';
 
-     data = [{
+
+
+////////////////////////
+// Pre Populated Data //
+////////////////////////
+
+var tData = [{
   "created_at": "Thu May 17 22:59:56 +0000 2012",
   "id": 203258580281999361,
   "id_str": "203258580281999361",
@@ -1293,13 +1339,272 @@ function spoofData() {
   "possibly_sensitive": false
 }]
 
-     // append tweets into page
-     for (var i = 0; i < data.length; i++) {
-        $(JQTWEET.appendTo).append(
-            html.replace('TWEET_TEXT', JQTWEET.ify.clean(data[i].text) )
-                .replace(/USER/g, data[i].user.screen_name)
-                .replace('AGO', JQTWEET.timeAgo(data[i].created_at) )
-                .replace(/ID/g, data[i].id_str)
-        );
-     }
+var fbData =
+    {
+    "data": [
+        {
+        "id": "143728699029618_128374817298139",
+        "from": {
+            "name": "Disney Parks Blog",
+            "category": "Entertainment",
+            "id": "143728699029618"
+        },
+        "message": "Go behind the scenes with Bill Cantos who arranged the tunes you’ll hear in the Carthay Circle Restaurant at Disney California Adventure park.",
+        "picture": "http://external.ak.fbcdn.net/safe_image.php?d=AQARA2Hs4PrqVawx&w=90&h=90&url=http%3A%2F%2Fparksandresorts.wdpromedia.com%2Fmedia%2Fdisneyparks%2Fblog%2Fwp-content%2Fuploads%2F2012%2F05%2Fcarthaymusic.jpg",
+        "link": "http://bit.ly/MpmZiC",
+        "name": "Cue the Dining Music at Carthay Circle Restaurant in Disney California Adventure Park « Disney Park",
+        "caption": "disneyparks.disney.go.com",
+        "description": "Nothing sets the mood over a tasty meal like just the right music. In this video, we take you behind the scenes and into the recording studio with Bill Cantos. Cantos is the music arranger of all the tunes that you’ll hear in the new Carthay Circle Restaurant in Disney California Adventure park.",
+        "icon": "http://static.ak.fbcdn.net/rsrc.php/v1/yD/r/aS8ecmYRys0.gif",
+        "actions": [
+            {
+            "name": "Comment",
+            "link": "http://www.facebook.com/143728699029618/posts/128374817298139"
+        },
+        {
+            "name": "Like",
+            "link": "http://www.facebook.com/143728699029618/posts/128374817298139"
+        }
+        ],
+        "type": "link",
+        "created_time": "2012-05-17T23:31:26+0000",
+        "updated_time": "2012-05-17T23:31:26+0000",
+        "likes": {
+            "data": [
+                {
+                "name": "Mariah Sjolund",
+                "id": "566109870"
+            }
+            ],
+            "count": 20
+        },
+        "comments": {
+            "count": 0
+        }
+    },
+    {
+        "id": "143728699029618_440164919328318",
+        "from": {
+            "name": "Disney Parks Blog",
+            "category": "Entertainment",
+            "id": "143728699029618"
+        },
+        "message": "Take a look at some great merchandise inspired by the Red Car Trolley that will be featured in Los Feliz Five & Dime when Buena Vista Street opens June 15 at Disney California Adventure park.",
+        "picture": "http://external.ak.fbcdn.net/safe_image.php?d=AQCWGgvxuUcv6X4V&w=90&h=90&url=http%3A%2F%2Fparksandresorts.wdpromedia.com%2Fmedia%2Fdisneyparks%2Fblog%2Fwp-content%2Fuploads%2F2012%2F05%2Frcm201095SMALL.jpg",
+        "link": "http://bit.ly/KUMjed",
+        "name": "Get on Board with the Red Car Trolley Collection at Disney California Adventure Park « Disney Parks",
+        "caption": "disneyparks.disney.go.com",
+        "description": "Can you believe how quickly the time has gone? We are just less than one month away from the opening of Buena Vista Street and Cars Land at Disney California Adventure park, and I’ll tell you I’m not sure what I’m more excited for. It seems like it was only yesterday that we made a trek out to see s...",
+        "icon": "http://static.ak.fbcdn.net/rsrc.php/v1/yD/r/aS8ecmYRys0.gif",
+        "actions": [
+            {
+            "name": "Comment",
+            "link": "http://www.facebook.com/143728699029618/posts/440164919328318"
+        },
+        {
+            "name": "Like",
+            "link": "http://www.facebook.com/143728699029618/posts/440164919328318"
+        }
+        ],
+        "type": "link",
+        "created_time": "2012-05-17T22:35:07+0000",
+        "updated_time": "2012-05-17T22:35:07+0000",
+        "likes": {
+            "data": [
+                {
+                "name": "Mabel Mastro",
+                "id": "624070807"
+            }
+            ],
+            "count": 60
+        },
+        "comments": {
+            "count": 0
+        }
+    },
+    {
+        "id": "143728699029618_411215732243217",
+        "from": {
+            "name": "Disney Parks Blog",
+            "category": "Entertainment",
+            "id": "143728699029618"
+        },
+        "message": "Star Wars Weekends returns to Disney's Hollywood Studios tomorrow. Whom is Chewbacca most hoping to meet?",
+        "picture": "http://external.ak.fbcdn.net/safe_image.php?d=AQDMFNEWcBtGnNlf&w=130&h=130&url=http%3A%2F%2Fi2.ytimg.com%2Fvi%2FMCFkEtrLeHw%2Fhqdefault.jpg",
+        "link": "http://www.youtube.com/watch?v=MCFkEtrLeHw&list=UU1xwwLwm6WSMbUn_Tp597hQ&index=11&feature=plpp_video",
+        "source": "http://www.youtube.com/embed/videoseries?index=15&list=UU1xwwLwm6WSMbUn_Tp597hQ&autoplay=1",
+        "name": "Ashley Eckstein meets one of her biggest fans, Chewbacca, at Star Wars Weekends",
+        "caption": "www.youtube.com",
+        "description": "Go behind the scenes and check out some of the fun we're having planning Star Wars Weekends. Read more at the Disney Parks Blog: http://bit.ly/IFwgi5 Check o...",
+        "icon": "http://static.ak.fbcdn.net/rsrc.php/v1/yj/r/v2OnaTyTQZE.gif",
+        "actions": [
+            {
+            "name": "Comment",
+            "link": "http://www.facebook.com/143728699029618/posts/411215732243217"
+        },
+        {
+            "name": "Like",
+            "link": "http://www.facebook.com/143728699029618/posts/411215732243217"
+        }
+        ],
+        "type": "video",
+        "created_time": "2012-05-17T20:01:01+0000",
+        "updated_time": "2012-05-17T20:01:01+0000",
+        "shares": {
+            "count": 1
+        },
+        "likes": {
+            "data": [
+                {
+                "name": "Gloria Wilson De Vore",
+                "id": "100000107741339"
+            }
+            ],
+            "count": 36
+        },
+        "comments": {
+            "count": 0
+        }
+    },
+    {
+        "id": "143728699029618_333989606674249",
+        "from": {
+            "name": "Disney Parks Blog",
+            "category": "Entertainment",
+            "id": "143728699029618"
+        },
+        "message": "Curiouser and curiouser...this magical, mystical passageway is unlike any other and it leads to a party that is unlike any other! The \"Mad T Party\" awaits at Disney California Adventure park!",
+        "picture": "http://external.ak.fbcdn.net/safe_image.php?d=AQB50ZvGqydeKAXJ&w=90&h=90&url=http%3A%2F%2Fparksandresorts.wdpromedia.com%2Fmedia%2Fdisneyparks%2Fblog%2Fwp-content%2Fuploads%2F2012%2F05%2Fdrh110210SMALL.jpg",
+        "link": "http://disneyparks.disney.go.com/blog/2012/05/down-the-rabbit-hole-the-mad-t-party-awaits-at-disney-california-adventure-park/",
+        "name": "Down the Rabbit Hole … The Mad T Party Awaits at Disney California Adventure Park! « Disney Parks B",
+        "caption": "disneyparks.disney.go.com",
+        "description": "By now, you may have heard that a funderful new party is in the making at Disney California Adventure park … the Mad T Party! But, before experiencing the assortment of joyfulutionary entertainment that awaits you, you must make your way down the Rabbit Hole!",
+        "icon": "http://static.ak.fbcdn.net/rsrc.php/v1/yD/r/aS8ecmYRys0.gif",
+        "actions": [
+            {
+            "name": "Comment",
+            "link": "http://www.facebook.com/143728699029618/posts/333989606674249"
+        },
+        {
+            "name": "Like",
+            "link": "http://www.facebook.com/143728699029618/posts/333989606674249"
+        }
+        ],
+        "type": "link",
+        "created_time": "2012-05-17T17:32:01+0000",
+        "updated_time": "2012-05-17T22:26:48+0000",
+        "shares": {
+            "count": 16
+        },
+        "likes": {
+            "data": [
+                {
+                "name": "Kazumi Yoshikawa",
+                "id": "100003522658456"
+            }
+            ],
+            "count": 168
+        },
+        "comments": {
+            "data": [
+                {
+                "id": "143728699029618_333989606674249_2759029",
+                "from": {
+                    "name": "Tina Pancoast Cooper",
+                    "id": "100000650495079"
+                },
+                "message": "Wish Disney would do stuff like this for WDW ....they do wayyyy more new stuff in CA ...our only upgrade lately is bigger fantasyland and that's taking forever!",
+                "created_time": "2012-05-17T19:30:22+0000"
+            },
+            {
+                "id": "143728699029618_333989606674249_2759440",
+                "from": {
+                    "name": "Stephanie Swanberg",
+                    "id": "100000772038646"
+                },
+                "message": "I want to go:) we they have any earlier ? I'm going in two weeks!!!!",
+                "created_time": "2012-05-17T22:26:48+0000"
+            }
+            ],
+            "count": 12
+        }
+    },
+    {
+        "id": "143728699029618_413760408654796",
+        "from": {
+            "name": "Disney Parks Blog",
+            "category": "Entertainment",
+            "id": "143728699029618"
+        },
+        "message": "We've got an update on the 20th anniversary of the Walt Disney World Marathon. ",
+        "picture": "http://external.ak.fbcdn.net/safe_image.php?d=AQAvThw60yLnsEiU&w=90&h=90&url=http%3A%2F%2Fparksandresorts.wdpromedia.com%2Fmedia%2Fdisneyparks%2Fblog%2Fwp-content%2Fuploads%2F2012%2F05%2Fmarathoncourse.jpg",
+        "link": "http://disneyparks.disney.go.com/blog/2012/05/new-twists-and-turns-coming-to-20th-anniversary-walt-disney-world-marathon-course",
+        "name": "New Twists and Turns Coming to 20th Anniversary Walt Disney World Marathon Course « Disney Parks Bl",
+        "caption": "disneyparks.disney.go.com",
+        "description": "The countdown has begun to the 20th anniversary of the Walt Disney World Marathon on Jan. 13, 2013, and not surprisingly, our runDisney folks are hard at work putting their creative juices together to come up with some fun new twists for the race. So far they have added some special entertainment al...",
+        "icon": "http://static.ak.fbcdn.net/rsrc.php/v1/yD/r/aS8ecmYRys0.gif",
+        "actions": [
+            {
+            "name": "Comment",
+            "link": "http://www.facebook.com/143728699029618/posts/413760408654796"
+        },
+        {
+            "name": "Like",
+            "link": "http://www.facebook.com/143728699029618/posts/413760408654796"
+        }
+        ],
+        "type": "link",
+        "created_time": "2012-05-17T15:45:20+0000",
+        "updated_time": "2012-05-17T15:57:28+0000",
+        "shares": {
+            "count": 27
+        },
+        "likes": {
+            "data": [
+                {
+                "name": "Aditya Devdhar",
+                "id": "100000793731871"
+            }
+            ],
+            "count": 105
+        },
+        "comments": {
+            "data": [
+                {
+                "id": "143728699029618_413760408654796_4878626",
+                "from": {
+                    "name": "Amanda Wynne",
+                    "id": "652757785"
+                },
+                "message": "Wowziers that looks amazing - my first time with Anjuli Leahy this is gonna rock !!!!!!",
+                "message_tags": [
+                    {
+                    "id": "555520624",
+                    "name": "Anjuli Leahy",
+                    "type": "user",
+                    "offset": 49,
+                    "length": 12
+                }
+                ],
+                "created_time": "2012-05-17T15:56:32+0000",
+                "likes": 2
+            },
+            {
+                "id": "143728699029618_413760408654796_4878628",
+                "from": {
+                    "name": "Jj Jc",
+                    "id": "1157079108"
+                },
+                "message": "Hoping to see all the new things this summer!",
+                "created_time": "2012-05-17T15:57:28+0000"
+            }
+            ],
+            "count": 2
+        }
+    }
+    ],
+    "paging": {
+        "previous": "https://graph.facebook.com/DisneyParksBlog/posts?limit=5&access_token=AAACEdEose0cBAKKx6zvpNdEnZAAZC0tZBIGWWoeB6f8VFEdsLq8UZB9mn5YRpVnmiSpdurhi2VZBWZCn7JRnQ2rPsg2xWlJ7NqfIvWXcFgO0XZCzLXNPLJl&since=1337297486&__previous=1",
+        "next": "https://graph.facebook.com/DisneyParksBlog/posts?limit=5&access_token=AAACEdEose0cBAKKx6zvpNdEnZAAZC0tZBIGWWoeB6f8VFEdsLq8UZB9mn5YRpVnmiSpdurhi2VZBWZCn7JRnQ2rPsg2xWlJ7NqfIvWXcFgO0XZCzLXNPLJl&until=1337269519"
+    }
 }
