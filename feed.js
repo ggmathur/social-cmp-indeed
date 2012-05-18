@@ -18,11 +18,7 @@ JQTWEET = {
             },
             success: function(data, textStatus, xhr) {
  
-                 var html = '<div style="width:300px; font-family:georgia; font-size:15px; color:#333333; margin:0 left 15px auto; padding:15px 0 15px 0; border-top:1px dotted #ccc;">\
-                                TWEET_TEXT\
-                                <div style="font-size:10px;font-style:italic;color:#666666;">\
-                                    AGO\
-                                </div>';
+                 var html = '<div class="tweet">TWEET_TEXT<div class="time">AGO</div>';
          
                  // append tweets into page
                  for (var i = 0; i < data.length; i++) {
@@ -115,25 +111,25 @@ JQTWEET = {
       link: function(tweet) {
         return tweet.replace(/\b(((https*\:\/\/)|www\.)[^\"\']+?)(([!?,.\)]+)?(\s|$))/g, function(link, m1, m2, m3, m4) {
           var http = m2.match(/w/) ? 'http://' : '';
-          return '<a class="twtr-hyperlink" target="_blank" href="' + http + m1 + '" style="text-decoration:none;color:#13c9d0;">' + ((m1.length > 25) ? m1.substr(0, 24) + '...' : m1) + '</a>' + m4;
+          return '<a class="twtr-hyperlink" target="_blank" href="' + http + m1 + '">' + ((m1.length > 25) ? m1.substr(0, 24) + '...' : m1) + '</a>' + m4;
         });
       },
  
       at: function(tweet) {
         return tweet.replace(/\B[@＠]([a-zA-Z0-9_]{1,20})/g, function(m, username) {
-          return '<a target="_blank" class="twtr-atreply" href="http://twitter.com/intent/user?screen_name=' + username + '"style="text-decoration:none;color:#13c9d0;">@' + username + '</a>';
+          return '<a target="_blank" class="twtr-atreply" href="http://twitter.com/intent/user?screen_name=' + username + '">@' + username + '</a>';
         });
       },
  
       list: function(tweet) {
         return tweet.replace(/\B[@＠]([a-zA-Z0-9_]{1,20}\/\w+)/g, function(m, userlist) {
-          return '<a target="_blank" class="twtr-atreply" href="http://twitter.com/' + userlist + '"style="text-decoration:none;color:#13c9d0;">@' + userlist + '</a>';
+          return '<a target="_blank" class="twtr-atreply" href="http://twitter.com/' + userlist + '">@' + userlist + '</a>';
         });
       },
  
       hash: function(tweet) {
         return tweet.replace(/(^|\s+)#(\w+)/gi, function(m, before, hash) {
-          return before + '<a target="_blank" class="twtr-hashtag" href="http://twitter.com/search?q=%23' + hash + '"style="text-decoration:none;color:#13c9d0;">#' + hash + '</a>';
+          return before + '<a target="_blank" class="twtr-hashtag" href="http://twitter.com/search?q=%23' + hash + '">#' + hash + '</a>';
         });
       },
  
